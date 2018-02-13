@@ -5,7 +5,7 @@ const STATUS_USER_ERROR = 422;
 
 // This array of posts persists in memory across requests. Feel free
 // to change this to a let binding if you need to reassign it.
-const posts = [
+let posts = [
   {
     title: "The post title",
     contents: "The post contents",
@@ -52,6 +52,33 @@ server.post("/posts", (req, res) => {
   // console.log(posts);
   res.send(posts);
   id++;
+});
+
+server.put("/posts", (req, res) => {
+  const newTitle = req.body.title;
+  const newContents = req.body.contents;
+  const putId = req.body.id;
+
+  if (!putId || !newTitle || !newContents) {
+    res
+      .status(STATUS_USER_ERROR)
+      .send({ ERROR: "You must send in an id, title, and contents" });
+  } else {
+    const newPosts = posts.map(post => {
+      if (post.id === Number(putId)) {
+        return { ...post, title: newTitle, contents: newContents };
+      }
+      return post;
+    });
+    if (!newPosts) {
+      res
+        .status(STATUS_USER_ERROR)
+        .send({ ERROR: "You must send in an id, title, and contents" });
+    } else {
+      posts = newPosts;
+    }
+  }
+  res.status(200).send(posts);
 });
 
 module.exports = { posts, server };
