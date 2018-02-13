@@ -9,10 +9,10 @@ let posts = [
   {
     title: "The post title",
     contents: "The post contents",
-    id: 0
+    id: 1
   }
 ];
-let id = 1;
+let id = 2;
 const server = express();
 // to enable parsing of json bodies for post requests
 server.use(bodyParser.json());
@@ -80,6 +80,23 @@ server.put("/posts", (req, res) => {
     } else {
       posts = newPosts;
     }
+  }
+  res.status(200).send(posts);
+});
+
+server.delete("/posts", (req, res) => {
+  const deleteId = Number(req.body.id);
+  const checkPost = post => {
+    return post.id === deleteId;
+  };
+  if (!posts.find(checkPost)) {
+    res
+      .status(STATUS_USER_ERROR)
+      .send({ ERROR: "That id is not in the Array" });
+  } else {
+    posts = posts.filter(post => {
+      return post.id !== deleteId;
+    });
   }
   res.status(200).send(posts);
 });
