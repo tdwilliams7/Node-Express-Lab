@@ -64,16 +64,19 @@ server.put("/posts", (req, res) => {
       .status(STATUS_USER_ERROR)
       .send({ ERROR: "You must send in an id, title, and contents" });
   } else {
+    let flag = false;
     const newPosts = posts.map(post => {
       if (post.id === Number(putId)) {
+        flag = true; // post will be changed
         return { ...post, title: newTitle, contents: newContents };
       }
       return post;
     });
-    if (!newPosts) {
+    // checks to see if a post was changed
+    if (!flag) {
       res
         .status(STATUS_USER_ERROR)
-        .send({ ERROR: "You must send in an id, title, and contents" });
+        .send({ ERROR: "That id is not in the Array" });
     } else {
       posts = newPosts;
     }
