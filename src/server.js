@@ -8,10 +8,11 @@ const STATUS_USER_ERROR = 422;
 const posts = [
   {
     title: "The post title",
-    contents: "The post contents"
+    contents: "The post contents",
+    id: 0
   }
 ];
-
+let id = 1;
 const server = express();
 // to enable parsing of json bodies for post requests
 server.use(bodyParser.json());
@@ -38,6 +39,19 @@ server.get("/posts", (req, res) => {
   res.send(posts);
 });
 
-// server.get("/post/:term?", (req, res) => {});
+server.post("/posts", (req, res) => {
+  const { title, contents } = req.body;
+  if (!title || !contents) {
+    res
+      .status(STATUS_USER_ERROR)
+      .send({ ERROR: "You must include a title and contents" });
+  }
+  const post = { title, contents, id };
+  console.log(post);
+  posts.push(post);
+  // console.log(posts);
+  res.send(posts);
+  id++;
+});
 
 module.exports = { posts, server };
