@@ -98,7 +98,7 @@ server.delete("/posts", (req, res) => {
       return post.id !== deleteId;
     });
   }
-  res.status(200).send(posts);
+  res.status(200).send({ success: true });
 });
 
 module.exports = { posts, server };
